@@ -2,14 +2,14 @@ package main
 
 import (
 	"github/gyu-young-park/blockchain"
-	"log"
 )
 
 func main() {
-	log.Println("start golockchain")
+	blockChain := blockchain.NewBlockchain()
+	prevHash := blockChain.GetLastBlock().Hash()
+	blockChain.CreateBlock(5, prevHash)
 
-	blockchainInstance := blockchain.NewBlockchain()
-	blockchainInstance.CreateBlock(2, "hash 1")
-	blockchainInstance.CreateBlock(5, "hash 2")
-	blockchainInstance.PrintInfo()
+	prevHash = blockChain.GetLastBlock().Hash()
+	blockChain.CreateBlock(10, prevHash)
+	blockChain.PrintInfo()
 }
