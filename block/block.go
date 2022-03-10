@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"github/gyu-young-park/transaction"
 	"time"
 )
 
@@ -12,25 +13,37 @@ const (
 )
 
 type Block struct {
-	Nonce        int                   `json:"nonce"`
-	PreviousHash [BLOCK_HASH_SIZE]byte `json:"previous_hash"`
-	Timestamp    int64                 `json:"timestamp"`
-	Transactions []string              `json:"transactions"`
+	Nonce        int                        `json:"nonce"`
+	PreviousHash [BLOCK_HASH_SIZE]byte      `json:"previous_hash"`
+	Timestamp    int64                      `json:"timestamp"`
+	Transactions []*transaction.Transaction `json:"transactions"`
 }
 
-func NewBlock(nonce int, previousHash [BLOCK_HASH_SIZE]byte) *Block {
+func NewBlock(nonce int, previousHash [BLOCK_HASH_SIZE]byte, transactions []*transaction.Transaction) *Block {
 	return &Block{
 		Timestamp:    time.Now().UnixNano(),
 		Nonce:        nonce,
 		PreviousHash: previousHash,
+		Transactions: transactions,
 	}
 }
 
 func (b *Block) PrintInfo() {
-	fmt.Printf("transactions	%v\n", b.Transactions)
 	fmt.Printf("nonce		%v\n", b.Nonce)
-	fmt.Printf("previouseHash	%x\n", b.PreviousHash)
+	fmt.Printf("previousHash	%x\n", b.PreviousHash)
 	fmt.Printf("timestamp	%v\n", b.Timestamp)
+	for _, t := range b.Transactions {
+		t.Print()
+	}
+}
+
+func (b *Block) MarshalJSON() ([]byte, error) {
+	return json.Marshal(Block{
+		Timestamp:    b.Timestamp,
+		Nonce:        b.Nonce,
+		PreviousHash: b.PreviousHash,
+		Transactions: b.Transactions,
+	})
 }
 
 // sha256.Size == 32, block converts to json string that represents byte array. And i use it to make hash value
