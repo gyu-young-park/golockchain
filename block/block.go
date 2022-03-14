@@ -13,9 +13,9 @@ const (
 )
 
 type Block struct {
+	Timestamp    int64                      `json:"timestamp"`
 	Nonce        int                        `json:"nonce"`
 	PreviousHash [BLOCK_HASH_SIZE]byte      `json:"previous_hash"`
-	Timestamp    int64                      `json:"timestamp"`
 	Transactions []*transaction.Transaction `json:"transactions"`
 }
 

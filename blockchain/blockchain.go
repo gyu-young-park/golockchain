@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"github/gyu-young-park/block"
 	"github/gyu-young-park/transaction"
+	"strings"
+)
+
+const (
+	MINING_DIFFICULTY = 3
 )
 
 type Blockchain struct {
@@ -42,4 +47,33 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [block.BLOCK_HASH_SIZE
 func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
 	t := transaction.NewTransaction(sender, recipient, value)
 	bc.transactionPool = append(bc.transactionPool, t)
+}
+
+func (bc *Blockchain) CopyTransactionPool() []*transaction.Transaction {
+	transactions := make([]*transaction.Transaction, 0)
+	for _, t := range bc.transactionPool {
+		transactions = append(transactions, transaction.NewTransaction(
+			t.SenderBlockchainAddress,
+			t.RecipientBlockchainAddress,
+			t.Value,
+		))
+	}
+	return transactions
+}
+
+func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transaction []*transaction.Transaction, difficulty int) bool {
+	zeros := strings.Repeat("0", difficulty)
+	guessBlock := block.Block{0, nonce, previousHash, transaction}
+	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
+	return guessHashStr[:difficulty] == zeros
+}
+
+func (bc *Blockchain) ProofOfOWork() int {
+	transactions := bc.CopyTransactionPool()
+	previousHash := bc.GetLastBlock().Hash()
+	nonce := 0
+	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
+		nonce += 1
+	}
+	return nonce
 }
