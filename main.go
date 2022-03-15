@@ -1,21 +1,24 @@
 package main
 
 import (
+	"fmt"
 	"github/gyu-young-park/blockchain"
 )
 
 func main() {
-	blockChain := blockchain.NewBlockchain()
+	testBlockchainAddress := "my_block_chain_address"
+	blockChain := blockchain.NewBlockchain(testBlockchainAddress)
 
 	blockChain.AddTransaction("A", "B", 1.0)
-	prevHash := blockChain.GetLastBlock().Hash()
-	nonce := blockChain.ProofOfOWork()
-	blockChain.CreateBlock(nonce, prevHash)
+	blockChain.Mining()
+	blockChain.PrintInfo()
 
 	blockChain.AddTransaction("C", "D", 2.0)
 	blockChain.AddTransaction("X", "Y", 3.0)
-	prevHash = blockChain.GetLastBlock().Hash()
-	nonce = blockChain.ProofOfOWork()
-	blockChain.CreateBlock(nonce, prevHash)
+	blockChain.Mining()
 	blockChain.PrintInfo()
+
+	fmt.Printf("total bc transaction total value: %v\n", blockChain.CalculateTotalAmount(testBlockchainAddress))
+	fmt.Printf("total bc transaction C value: %v\n", blockChain.CalculateTotalAmount("C"))
+	fmt.Printf("total bc transaction D value: %v\n", blockChain.CalculateTotalAmount("D"))
 }

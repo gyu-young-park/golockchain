@@ -4,23 +4,28 @@ import (
 	"fmt"
 	"github/gyu-young-park/block"
 	"github/gyu-young-park/transaction"
+	"log"
 	"strings"
 )
 
 const (
 	MINING_DIFFICULTY = 3
+	MINING_SENDER     = "THE BLOCKCHAIN"
+	MINING_REWARD     = 1.0
 )
 
 type Blockchain struct {
-	transactionPool []*transaction.Transaction
-	chain           []*block.Block
+	transactionPool   []*transaction.Transaction
+	chain             []*block.Block
+	blockchainAddress string
 }
 
-func NewBlockchain() *Blockchain {
+func NewBlockchain(blockchainAddress string) *Blockchain {
 	b := &block.Block{
 		Nonce: 0,
 	}
 	bc := new(Blockchain)
+	bc.blockchainAddress = blockchainAddress
 	bc.CreateBlock(0, b.Hash())
 	return bc
 }
@@ -76,4 +81,30 @@ func (bc *Blockchain) ProofOfOWork() int {
 		nonce += 1
 	}
 	return nonce
+}
+
+func (bc *Blockchain) Mining() bool {
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+	nonce := bc.ProofOfOWork()
+	previousHash := bc.GetLastBlock().Hash()
+	bc.CreateBlock(nonce, previousHash)
+	log.Println("action=mining, status=success")
+	return true
+}
+
+func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
+	var totalAmount float32 = 0.0
+	for _, b := range bc.chain {
+		for _, t := range b.Transactions {
+			value := t.Value
+			if blockchainAddress == t.RecipientBlockchainAddress {
+				totalAmount += value
+			}
+
+			if blockchainAddress == t.SenderBlockchainAddress {
+				totalAmount -= value
+			}
+		}
+	}
+	return totalAmount
 }
