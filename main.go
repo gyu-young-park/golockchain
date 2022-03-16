@@ -3,11 +3,18 @@ package main
 import (
 	"fmt"
 	"github/gyu-young-park/blockchain"
+	"github/gyu-young-park/wallet"
 )
 
 func main() {
 	testBlockchainAddress := "my_block_chain_address"
 	blockChain := blockchain.NewBlockchain(testBlockchainAddress)
+
+	w := wallet.NewWallet()
+	fmt.Println("1: " + w.PrivateKeyStr())
+	fmt.Println(w.PrivateKey())
+	fmt.Println("1: " + w.PublicKeyStr())
+	fmt.Println(w.PublicKey())
 
 	blockChain.AddTransaction("A", "B", 1.0)
 	blockChain.Mining()
