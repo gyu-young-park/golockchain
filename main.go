@@ -12,9 +12,8 @@ func main() {
 
 	w := wallet.NewWallet()
 	fmt.Println("1: " + w.PrivateKeyStr())
-	fmt.Println(w.PrivateKey())
 	fmt.Println("1: " + w.PublicKeyStr())
-	fmt.Println(w.PublicKey())
+	fmt.Println("1:" + w.BlockchainAddress())
 
 	blockChain.AddTransaction("A", "B", 1.0)
 	blockChain.Mining()
