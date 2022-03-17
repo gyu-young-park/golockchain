@@ -10,7 +10,6 @@ import (
 
 const BLOCK_HASH_SIZE = sha256.Size
 
-//
 type Block struct {
 	Timestamp    int64                      `json:"timestamp"`
 	Nonce        int                        `json:"nonce"`
