@@ -16,17 +16,17 @@ func NewTransaction(sender string, recipient string, value float32) *Transaction
 	return &Transaction{sender, recipient, value}
 }
 
-func (t *Transaction) Print() {
-	fmt.Printf("%s\n", strings.Repeat("-", 40))
-	fmt.Printf(" sender_address:	%s\n", t.SenderBlockchainAddress)
-	fmt.Printf(" recipient_address:	%s\n", t.RecipientBlockchainAddress)
-	fmt.Printf(" value:				%.1f\n", t.Value)
-}
-
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Transaction{
 		SenderBlockchainAddress:    t.SenderBlockchainAddress,
 		RecipientBlockchainAddress: t.RecipientBlockchainAddress,
 		Value:                      t.Value,
 	})
+}
+
+func (t *Transaction) Print() {
+	fmt.Printf("%s\n", strings.Repeat("-", 40))
+	fmt.Printf(" sender_address:	%s\n", t.SenderBlockchainAddress)
+	fmt.Printf(" recipient_address:	%s\n", t.RecipientBlockchainAddress)
+	fmt.Printf(" value:				%.1f\n", t.Value)
 }

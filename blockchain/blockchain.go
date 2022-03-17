@@ -1,9 +1,12 @@
 package blockchain
 
 import (
+	"crypto/ecdsa"
+	"crypto/sha256"
 	"fmt"
 	"github/gyu-young-park/block"
 	"github/gyu-young-park/transaction"
+	"github/gyu-young-park/utils"
 	"log"
 	"strings"
 )
@@ -49,9 +52,32 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [block.BLOCK_HASH_SIZE
 	return b
 }
 
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
-	t := transaction.NewTransaction(sender, recipient, value)
-	bc.transactionPool = append(bc.transactionPool, t)
+func (bc *Blockchain) AddTransaction(transaction *transaction.Transaction, senderPublicKey *ecdsa.PublicKey, signature *utils.Signature) bool {
+	// when recipient was miner, not should not verify signature
+	if transaction.SenderBlockchainAddress == MINING_SENDER {
+		bc.transactionPool = append(bc.transactionPool, transaction)
+		return true
+	}
+	if bc.VerifyTransactionSignature(senderPublicKey, signature, transaction) {
+		// sender transaction all value is same with sender wallet balance
+		/* now i commented, because of testing easily
+		if bc.CalculateTotalAmount(transaction.SenderBlockchainAddress) < transaction.Value {
+			log.Println("ERROR: Not enough balance in wallet")
+			return false
+		}
+		*/
+		bc.transactionPool = append(bc.transactionPool, transaction)
+		return true
+	} else {
+		log.Println("ERROR: Verify Transaction")
+	}
+	return false
+}
+
+func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, signature *utils.Signature, transaction *transaction.Transaction) bool {
+	m, _ := transaction.MarshalJSON()
+	h := sha256.Sum256([]byte(m))
+	return ecdsa.Verify(senderPublicKey, h[:], signature.R, signature.S)
 }
 
 func (bc *Blockchain) CopyTransactionPool() []*transaction.Transaction {
@@ -66,26 +92,27 @@ func (bc *Blockchain) CopyTransactionPool() []*transaction.Transaction {
 	return transactions
 }
 
-func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transaction []*transaction.Transaction, difficulty int) bool {
+func (bc *Blockchain) validProof(nonce int, previousHash [32]byte, transaction []*transaction.Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
-	guessBlock := block.Block{0, nonce, previousHash, transaction}
+	guessBlock := block.Block{Timestamp: 0, Nonce: nonce, PreviousHash: previousHash, Transactions: transaction}
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
 	return guessHashStr[:difficulty] == zeros
 }
 
-func (bc *Blockchain) ProofOfOWork() int {
+func (bc *Blockchain) proofOfOWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.GetLastBlock().Hash()
 	nonce := 0
-	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
+	for !bc.validProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
 		nonce += 1
 	}
 	return nonce
 }
 
 func (bc *Blockchain) Mining() bool {
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
-	nonce := bc.ProofOfOWork()
+	transaction := transaction.NewTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+	bc.AddTransaction(transaction, nil, nil)
+	nonce := bc.proofOfOWork()
 	previousHash := bc.GetLastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
 	log.Println("action=mining, status=success")

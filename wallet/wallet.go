@@ -6,6 +6,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
+	"github/gyu-young-park/transaction"
+	"github/gyu-young-park/utils"
 
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/crypto/ripemd160"
@@ -15,6 +17,19 @@ type Wallet struct {
 	privateKey        *ecdsa.PrivateKey
 	publicKey         *ecdsa.PublicKey
 	blockchainAddress string
+}
+
+type TransactionForSignature struct {
+	senderPrivateKey *ecdsa.PrivateKey
+	SenderPublicKey  *ecdsa.PublicKey
+	Transaction      *transaction.Transaction
+}
+
+func (t *TransactionForSignature) GenerateSignature() *utils.Signature {
+	m, _ := t.Transaction.MarshalJSON()
+	h := sha256.Sum256([]byte(m))
+	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
+	return &utils.Signature{R: r, S: s}
 }
 
 // blockchainAddress algorithm
@@ -75,4 +90,13 @@ func (w *Wallet) PublicKeyStr() string {
 
 func (w *Wallet) BlockchainAddress() string {
 	return w.blockchainAddress
+}
+
+func (w *Wallet) NewTransactionForSignature(recipientBlockchainAddress string, value float32) *TransactionForSignature {
+	transaction := transaction.NewTransaction(w.blockchainAddress, recipientBlockchainAddress, value)
+	return &TransactionForSignature{
+		senderPrivateKey: w.privateKey,
+		SenderPublicKey:  w.publicKey,
+		Transaction:      transaction,
+	}
 }

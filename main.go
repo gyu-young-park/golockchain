@@ -7,24 +7,16 @@ import (
 )
 
 func main() {
-	testBlockchainAddress := "my_block_chain_address"
-	blockChain := blockchain.NewBlockchain(testBlockchainAddress)
+	blockchainWallet := wallet.NewWallet()
+	blockChain := blockchain.NewBlockchain(blockchainWallet.BlockchainAddress())
 
-	w := wallet.NewWallet()
-	fmt.Println("1: " + w.PrivateKeyStr())
-	fmt.Println("1: " + w.PublicKeyStr())
-	fmt.Println("1:" + w.BlockchainAddress())
+	walletA := wallet.NewWallet()
+	walletB := wallet.NewWallet()
 
-	blockChain.AddTransaction("A", "B", 1.0)
+	t := walletA.NewTransactionForSignature(walletB.BlockchainAddress(), 1.0)
+	isAdded := blockChain.AddTransaction(t.Transaction, t.SenderPublicKey, t.GenerateSignature())
+	fmt.Println("Added?", isAdded)
+
 	blockChain.Mining()
 	blockChain.PrintInfo()
-
-	blockChain.AddTransaction("C", "D", 2.0)
-	blockChain.AddTransaction("X", "Y", 3.0)
-	blockChain.Mining()
-	blockChain.PrintInfo()
-
-	fmt.Printf("total bc transaction total value: %v\n", blockChain.CalculateTotalAmount(testBlockchainAddress))
-	fmt.Printf("total bc transaction C value: %v\n", blockChain.CalculateTotalAmount("C"))
-	fmt.Printf("total bc transaction D value: %v\n", blockChain.CalculateTotalAmount("D"))
 }

@@ -8,9 +8,7 @@ import (
 	"time"
 )
 
-const (
-	BLOCK_HASH_SIZE = sha256.Size
-)
+const BLOCK_HASH_SIZE = sha256.Size
 
 type Block struct {
 	Timestamp    int64                      `json:"timestamp"`
