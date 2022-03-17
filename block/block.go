@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+//
 const BLOCK_HASH_SIZE = sha256.Size
 
 type Block struct {
