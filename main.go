@@ -1,12 +1,21 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github/gyu-young-park/blockchain"
+	"github/gyu-young-park/server"
 	"github/gyu-young-park/wallet"
 )
 
 func main() {
+	port := flag.Uint("port", 5000, "TCP Port Number for Blockchain server")
+	flag.Parse()
+	fmt.Println(port)
+
+	app := server.NewBlockChainServer(uint16(*port))
+	app.Run()
+
 	blockchainWallet := wallet.NewWallet()
 	blockChain := blockchain.NewBlockchain(blockchainWallet.BlockchainAddress())
 
