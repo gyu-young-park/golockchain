@@ -36,11 +36,18 @@ func (b *Block) PrintInfo() {
 	}
 }
 
+type BlockMarshal struct {
+	Timestamp    int64                      `json:"timestamp"`
+	Nonce        int                        `json:"nonce"`
+	PreviousHash string                     `json:"previous_hash"`
+	Transactions []*transaction.Transaction `json:"transactions"`
+}
+
 func (b *Block) MarshalJSON() ([]byte, error) {
-	return json.Marshal(Block{
+	return json.Marshal(&BlockMarshal{
 		Timestamp:    b.Timestamp,
 		Nonce:        b.Nonce,
-		PreviousHash: b.PreviousHash,
+		PreviousHash: fmt.Sprintf("%x", b.PreviousHash),
 		Transactions: b.Transactions,
 	})
 }
