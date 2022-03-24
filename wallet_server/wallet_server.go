@@ -21,6 +21,8 @@ func NewWalletServer(port uint16, gateway string) *WalletServer {
 func (ws *WalletServer) WalletIndexHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Write([]byte("hello world"))
 	default:
 		log.Println("ERROR: Invalid HTTP Method")

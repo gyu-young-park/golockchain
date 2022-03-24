@@ -5,9 +5,13 @@ function App() {
   useEffect( () => {
     connectWalletServer()
   }, [])
-
+  
   const connectWalletServer = async () => {
-    const data = await fetch("http://0.0.0.0:8000")
+    const data = await fetch("http://0.0.0.0:8000",{
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin':'*'
+      }})
     setData(JSON.stringify(data))
   }
 
