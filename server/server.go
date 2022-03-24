@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"github/gyu-young-park/blockchain"

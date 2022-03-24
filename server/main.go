@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github/gyu-young-park/server"
 )
 
 func main() {
@@ -11,6 +10,6 @@ func main() {
 	flag.Parse()
 	fmt.Println(port)
 
-	app := server.NewBlockChainServer(uint16(*port))
+	app := NewBlockChainServer(uint16(*port))
 	app.Run()
 }
