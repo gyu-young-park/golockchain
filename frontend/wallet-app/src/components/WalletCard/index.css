@@ -1,0 +1,51 @@
+.wallet-card-container{
+    background: linear-gradient(to bottom right, #1930D8, 65%, #E013C7);
+    border-radius: 1em;
+    width: 98%;
+    height: 150px;
+    margin: auto;
+    padding:1rem;
+    box-sizing: border-box;
+    color: white;
+    font-size: 1.2em;
+    box-shadow: 1em 0em 2em #4957c2, -1em 0em 2em #4957c2, 0em 1em 2em #d661c9, 0em -1em 2em #4957c2;
+}
+
+.wallet-card-content-container{
+    height: 100%;
+}
+
+.wallet-card-content-logo{
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.wallet-card-content-logo > p {
+    font-size: 1.5em;
+    color: wheat;
+}
+
+.wallet-card-content-address-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.wallet-card-content-address-container > p {
+    font-size: 1.3em;
+}
+
+.wallet-card-content-bk-pk-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.wallet-card-content-btn-show-pk{
+    color: wheat;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 1em;
+}

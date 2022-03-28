@@ -1,3 +1,10 @@
 .wallet-balance-container{
-    
+    font-size: 1rem;
+    color: white;
+    padding-left: 1em;
+}
+
+.wallet-balance-digit{
+    font-size: 2rem;
+    font-weight: 900;
 }

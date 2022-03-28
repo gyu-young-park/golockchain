@@ -1,5 +1,11 @@
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
 body {
-  width: 100vw;
+  overflow: hidden;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,6 +17,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 10px;
+  box-sizing: border-box;
 }
 
 code {
@@ -19,9 +26,22 @@ code {
 }
 
 .container{
-  padding: 1em;
-  width: 36em;
-  height: 74em;
-  border: 1px solid black ;
-  
+  width: 37em;
+  height: 66em;
+  padding: 2em;
+  border: 3px solid #1C1C1D;
+  border-radius: 3em;
+  background-color: #1C1C1D;
+  overflow: hidden;
+}
+
+
+@media only screen and (max-width: 550px) {
+  .container{
+    background-color: #1C1C1D;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    border: 3px solid #1C1C1D;
+  }
 }
