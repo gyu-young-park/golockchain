@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import WalletBalance from './components/WalletBalance/WalletBalance'
+import './index.css'
+
 function App() {
   const [data ,setData] = useState("hello")
 
@@ -16,8 +19,8 @@ function App() {
   }
 
   return (
-    <div className="App">
-      {data}
+    <div className="container">
+      <WalletBalance/>
     </div>
   )
 }
