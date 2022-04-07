@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './index.css'
 import {FaEthereum} from "react-icons/fa"
 
 const WalletCard = () => {
+
     return (
         <div className="wallet-card-container">
             <div className="wallet-card-content-container">

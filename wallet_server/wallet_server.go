@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github/gyu-young-park/wallet"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,8 +31,42 @@ func (ws *WalletServer) WalletIndexHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+func wrapperCORS(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "*")
+			w.Header().Set("Access-Control-Allow-Headers", "*")
+			w.Header().Add("Conent-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+		} else {
+			h(w, r)
+		}
+	}
+}
+
+func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
+	log.Println(req.Method)
+	switch req.Method {
+	case http.MethodPost:
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Add("Conent-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		myWallet := wallet.NewWallet()
+		m, _ := myWallet.MarshalJSON()
+		io.WriteString(w, string(m[:]))
+	default:
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("ERROR: Invalid HTTP Method")
+	}
+}
+
 func (ws *WalletServer) Run() {
 	http.HandleFunc("/", ws.WalletIndexHandler)
+	http.HandleFunc("/wallet", wrapperCORS(ws.Wallet))
 	err := http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port)), nil)
 	if err != nil {
 		log.Fatal("ERROR: Start Wallet Server Error!")

@@ -5,19 +5,25 @@ import WalletSend from './components/WalletSend/WalletSend'
 import './index.css'
 
 function App() {
-  const [data ,setData] = useState("hello")
 
   useEffect( () => {
     connectWalletServer()
   }, [])
   
   const connectWalletServer = async () => {
-    const data = await fetch("http://0.0.0.0:8000",{
+    const res = await fetch("http://0.0.0.0:8000/wallet",{
+      method: 'POST',
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin':'*'
-      }})
-    setData(JSON.stringify(data))
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin':'*',
+        "Access-Control-Allow-Methods": "*"
+      },
+    })
+    const data = await res.json()
+    console.log(data["private_key"])
+    console.log(data["blockchain_address"])
+    console.log(data["public_key"])
   }
 
   return (
