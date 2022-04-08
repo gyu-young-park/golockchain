@@ -2,7 +2,26 @@ import React from "react";
 import './index.css'
 import {SiBitcoinsv} from "react-icons/si"
 
+interface TransactionData {
+    senderPrivateKey: string;
+
+}
+
 const WalletSend = () => {
+
+    const processSendMoneyHandler = (event : React.MouseEvent<HTMLElement>) => {
+        event.preventDefault()
+        const confirm_text = "Are you sure to send?"
+        const confirm_result = confirm(confirm_text)
+        if(confirm_result !== true){
+            alert("Canceled")
+            return
+        }
+        const transaction_data = {
+
+        }
+    } 
+
     return (
         <div className="wallet-send-container">
             <div className="wallet-send-logo-container">
@@ -18,7 +37,7 @@ const WalletSend = () => {
                     <input type="text"/>
                 </div>
             </div>
-            <div className="wallet-send-btn">
+            <div className="wallet-send-btn" onClick={processSendMoneyHandler}>
                 <div>SEND</div>
             </div>
         </div>

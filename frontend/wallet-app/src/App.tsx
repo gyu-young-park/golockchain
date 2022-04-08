@@ -5,27 +5,6 @@ import WalletSend from './components/WalletSend/WalletSend'
 import './index.css'
 
 function App() {
-
-  useEffect( () => {
-    connectWalletServer()
-  }, [])
-  
-  const connectWalletServer = async () => {
-    const res = await fetch("http://0.0.0.0:8000/wallet",{
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin':'*',
-        "Access-Control-Allow-Methods": "*"
-      },
-    })
-    const data = await res.json()
-    console.log(data["private_key"])
-    console.log(data["blockchain_address"])
-    console.log(data["public_key"])
-  }
-
   return (
     <div className="container">
       <WalletBalance/>
