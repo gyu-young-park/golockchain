@@ -51,9 +51,23 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPost:
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Add("Conent-Type", "application/json")
+		io.WriteString(w, string(utils.JsonStatus("success")))
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("ERROR: Invalid Http Method")
+	}
+}
+
 func (ws *WalletServer) Run() {
 	http.HandleFunc("/", ws.WalletIndexHandler)
 	http.HandleFunc("/wallet", utils.WrapperCORS(ws.Wallet))
+	http.HandleFunc("/transaction", utils.WrapperCORS(ws.CreateTransaction))
 	err := http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port)), nil)
 	if err != nil {
 		log.Fatal("ERROR: Start Wallet Server Error!")

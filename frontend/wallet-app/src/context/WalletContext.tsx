@@ -1,20 +1,15 @@
 import React, { useState , useEffect} from "react";
-interface WalletContextInterface {
+
+export interface WalletContextInterface {
     senderPrivateKey: string
     senderBlockchainAddress: string
     senderPublicKey: string
-    setSenderPrivateKey: (data: string) => void;
-    setSenderBlockchainAddress: (data: string) => void;
-    setSenderPublicKey: (data: string) => void;
 }
 
 const defaultData : WalletContextInterface = {
     senderPrivateKey: "",
     senderBlockchainAddress: "",
     senderPublicKey: "",
-    setSenderPrivateKey: () => {},
-    setSenderBlockchainAddress: () => {},
-    setSenderPublicKey: () => {}
 }
 export const WalletContext : React.Context<WalletContextInterface> = React.createContext<WalletContextInterface>(defaultData)
 
@@ -48,7 +43,7 @@ export const WalletContextProvider = ({children} : {children: React.ReactNode}) 
     }
 
     return (
-        <WalletContext.Provider value={{senderPrivateKey,senderBlockchainAddress,senderPublicKey, setSenderPrivateKey, setSenderBlockchainAddress, setSenderPublicKey}}>
+        <WalletContext.Provider value={{senderPrivateKey,senderBlockchainAddress,senderPublicKey}}>
             {children}
         </WalletContext.Provider>
     )
