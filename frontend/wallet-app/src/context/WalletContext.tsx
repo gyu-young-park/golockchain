@@ -23,15 +23,7 @@ export const WalletContextProvider = ({children} : {children: React.ReactNode}) 
     }, [])
       
     const connectWalletServer = async () => {
-        const res = await fetch("http://0.0.0.0:8000/wallet",{
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin':'*',
-            "Access-Control-Allow-Methods": "*"
-            },
-        })
+        const res = await fetch("http://0.0.0.0:8000/wallet")
         const data = await res.json()
         console.log(data["private_key"])
         console.log(data["blockchain_address"])

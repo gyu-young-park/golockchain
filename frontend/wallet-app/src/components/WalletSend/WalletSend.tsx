@@ -5,7 +5,7 @@ import { WalletContextInterface, WalletContext } from '../../context/WalletConte
 
 interface TransactionDataInterface extends WalletContextInterface{
     recipientBlockchainAddress: string
-    value: Number
+    value: string
 }
 
 const WalletSend = () => {
@@ -21,8 +21,17 @@ const WalletSend = () => {
             alert("Canceled")
             return
         }
+        const strValue = value + ''
         const transactionData : TransactionDataInterface = {
-            senderPrivateKey, senderPublicKey, senderBlockchainAddress, recipientBlockchainAddress, value
+            senderPrivateKey, senderPublicKey, senderBlockchainAddress, recipientBlockchainAddress, value:strValue
+        }
+        console.log(transactionData)
+        const jsonTransactionData = {
+            sender_private_key: transactionData.senderPrivateKey,
+            sender_blockchain_address: transactionData.senderBlockchainAddress,
+            sender_public_key: transactionData.senderPublicKey,
+            recipient_blockchain_address: transactionData.recipientBlockchainAddress,
+            value: transactionData.value,
         }
 
         const res = await fetch("http://0.0.0.0:8000/transaction",{
@@ -33,7 +42,7 @@ const WalletSend = () => {
                 'Access-Control-Allow-Origin':'*',
                 "Access-Control-Allow-Methods": "*"
             },
-            body: JSON.stringify(transactionData)
+            body: JSON.stringify(jsonTransactionData)
         })
 
         const data = await res.json()

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github/gyu-young-park/utils"
 	"github/gyu-young-park/wallet"
 	"io"
@@ -35,7 +36,7 @@ func (ws *WalletServer) WalletIndexHandler(w http.ResponseWriter, r *http.Reques
 func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	log.Println(req.Method)
 	switch req.Method {
-	case http.MethodPost:
+	case http.MethodGet:
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		w.Header().Add("Conent-Type", "application/json")
@@ -52,13 +53,35 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
+	log.Println(req.Method)
 	switch req.Method {
 	case http.MethodPost:
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		w.Header().Add("Conent-Type", "application/json")
+
+		decoder := json.NewDecoder(req.Body)
+		var t wallet.TransactionRequest
+		err := decoder.Decode(&t)
+		if err != nil {
+			log.Printf("ERROR: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+		if !t.Validate() {
+			log.Println("ERROR: missing fields")
+			w.WriteHeader(http.StatusBadRequest)
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+		log.Printf("SUCCESS: %v", *t.RecipientBlockchainAddress)
+		w.WriteHeader(http.StatusOK)
 		io.WriteString(w, string(utils.JsonStatus("success")))
+
 	default:
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("ERROR: Invalid Http Method")
 	}
